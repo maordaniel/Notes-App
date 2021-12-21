@@ -1,0 +1,36 @@
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0,0,0,.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal__window {
+    position: relative;
+    background-color: white;
+    min-width: 300px;
+    min-height: 300px;
+    border-radius: 5px;
+}
+
+.modal__close {
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+}
+
+.modal_text{
+    word-break: break-all;
+    white-space: pre-line;
+    max-height: 300px;
+    overflow: auto;
+    width: 85%;
+    padding: 2%;
+}
