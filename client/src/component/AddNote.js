@@ -43,6 +43,7 @@ export default function AddNote() {
             } catch (e) {
                 if (e === undefined) {
                     alert("An error occurred, please try again");
+                    setSubmit(false);   
                 } else if (e.status === 401) {
                     alert("You are probably logged out, please log in again");
                     dispatch(SetLogout());
