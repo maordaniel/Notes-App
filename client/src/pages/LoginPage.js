@@ -13,9 +13,8 @@ export default function LoginPage() {
     const history = useHistory();
     const dispatch = useDispatch();
 
-    const [email, setEmail] = useState("");
+    const [form, setForm] = useState({email: "", password: ""});
     const [emailError, setEmailError] = useState(false);
-    const [password, setPassword] = useState("");
     const [passwordError, setPasswordError] = useState(false);
     const [passwordShown, setPasswordShown] = useState(false);
     const [submit, setSubmit] = useState(false);
@@ -23,19 +22,28 @@ export default function LoginPage() {
     //validate string
     const isEmpty = (str) =>{
         return !str.trim().length;
-    }
+    };
 
-    //handle email change
-    const handleEmailChange = e => {
-        setEmail(e.target.value);
-        setEmailError(false);
-    }
+    //handle change
+    const handleFormChange = e => {
+        const name = e.target.name;
+        const value = e.target.value;
 
-    //handle password change
-    const handlePasswordChange = e => {
-        setPassword(e.target.value);
-        setPasswordError(false);
-    }
+        switch (name){
+            case "email":
+                form.email = value;
+                setForm({...form});
+                setEmailError(false);
+                break;
+            case "password":
+                form.password = value;
+                setForm({...form});
+                setPasswordError(false);
+                break;
+            default:
+                break;
+        }
+    };
 
     //show and hide password
     const togglePassword = () => {
@@ -44,7 +52,7 @@ export default function LoginPage() {
 
     //email validation
     const validateEmail = () => {
-        const emailValid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
+        const emailValid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(form.email);
         return emailValid;
     }
 
@@ -59,7 +67,7 @@ export default function LoginPage() {
         }
 
         //check password
-        if (isEmpty(password)) {
+        if (isEmpty(form.password)) {
             valid = false;
             setPasswordError(true);
         }
@@ -71,7 +79,7 @@ export default function LoginPage() {
     const login = async () => {
         if (validateLogin()) {
             setSubmit(true);
-            const body = {email: email, password: password.trim()};
+            const body = {email: form.email, password: form.password.trim()};
 
             try {
                 const res = await PostData('login', body);
@@ -112,15 +120,16 @@ export default function LoginPage() {
             <h1>
                 Login
             </h1>
+
             <div className="inputWrapper">
-                <input type="email" className="fieldInput" value={email} placeholder={"Email"}
-                       onChange={handleEmailChange}/>
+                <input type="email" name="email" className="fieldInput" value={form.email} placeholder={"Email"}
+                       onChange={handleFormChange}/>
                 {emailError ? <span className="errorSpan">Email is not valid</span> : null}
             </div>
             <div className="inputWrapper">
                 <div>
-                    <input type={passwordShown ? "text" : "password"} className="fieldInput" value={password}
-                           placeholder={"Password"} onChange={handlePasswordChange} maxLength={6}/>
+                    <input type={passwordShown ? "text" : "password"} name="password" className="fieldInput" value={form.password}
+                           placeholder={"Password"} onChange={handleFormChange} maxLength={6}/>
                     {passwordShown ?
                         <AiOutlineEyeInvisible className="togglePassword" onClick={togglePassword}/>
                         :
