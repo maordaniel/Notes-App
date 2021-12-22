@@ -79,7 +79,7 @@ export default function LoginPage() {
     const login = async () => {
         if (validateLogin()) {
             setSubmit(true);
-            const body = {email: form.email, password: form.password.trim()};
+            const body = {email: form.email.toLowerCase(), password: form.password.trim()};
 
             try {
                 const res = await PostData('login', body);
