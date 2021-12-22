@@ -13,45 +13,49 @@ export default function Registration() {
     const history = useHistory();
     const dispatch = useDispatch();
 
-    const [username, setUsername] = useState("");
+    const [form, setForm] = useState({username: "", email: "", password: "", schoolName: ""});
     const [usernameError, setUsernameError] = useState(false);
-    const [email, setEmail] = useState("");
     const [emailError, setEmailError] = useState(false);
-    const [password, setPassword] = useState("");
     const [passwordError, setPasswordError] = useState(false);
     const [passwordShown, setPasswordShown] = useState(false);
     const [submit, setSubmit] = useState(false);
-    const [schoolName, setSchoolName] = useState("");
     const [schoolNameError, setSchoolNameError] = useState(false);
 
     //validate string
-    const isEmpty = (str) =>{
+    const isEmpty = (str) => {
         return !str.trim().length;
     }
 
-    //handle username change
-    const handleUsernameChange = e => {
-        setUsername(e.target.value);
-        setUsernameError(false);
-    }
+    //handle change
+    const handleFormChange = e => {
+        const name = e.target.name;
+        const value = e.target.value;
 
-    //handle email change
-    const handleEmailChange = e => {
-        setEmail(e.target.value);
-        setEmailError(false);
-    }
-
-    //handle password change
-    const handlePasswordChange = e => {
-        setPassword(e.target.value);
-        setPasswordError(false);
-    }
-
-    //handle school name change
-    const handleSchoolNameChange = e => {
-        setSchoolName(e.target.value);
-        setSchoolNameError(false);
-    }
+        switch (name) {
+            case "username":
+                form.username = value;
+                setForm({...form});
+                setUsernameError(false);
+                break;
+            case "email":
+                form.email = value;
+                setForm({...form});
+                setEmailError(false);
+                break;
+            case "password":
+                form.password = value;
+                setForm({...form});
+                setPasswordError(false);
+                break;
+            case "schoolName":
+                form.schoolName = value;
+                setForm({...form});
+                setSchoolNameError(false);
+                break;
+            default:
+                break;
+        }
+    };
 
     //show and hide password
     const togglePassword = () => {
@@ -60,7 +64,7 @@ export default function Registration() {
 
     //email validation
     const validateEmail = () => {
-        const emailValid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
+        const emailValid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(form.email);
         return emailValid;
     }
 
@@ -69,7 +73,7 @@ export default function Registration() {
         let valid = true;
 
         //check username
-        if (isEmpty(username)) {
+        if (isEmpty(form.username)) {
             valid = false;
             setUsernameError(true);
         }
@@ -81,12 +85,12 @@ export default function Registration() {
         }
 
         //check password
-        if (isEmpty(password)) {
+        if (isEmpty(form.password)) {
             valid = false;
             setPasswordError(true);
         }
 
-        if (isEmpty(schoolName)){
+        if (isEmpty(form.schoolName)) {
             valid = false;
             setSchoolNameError(true);
         }
@@ -98,15 +102,17 @@ export default function Registration() {
     const Registration = async () => {
         if (validateLogin()) {
             setSubmit(true);
-            const body = {username: username.trim(),
-                email: email.trim(),
-                password: password.trim(),
-                schoolName: schoolName.trim()};
+            const body = {
+                username: form.username.trim(),
+                email: form.email.trim(),
+                password: form.password.trim(),
+                schoolName: form.schoolName.trim()
+            };
 
             try {
                 const res = await PostData('registration', body);
                 if (res.status === 201) {
-                    dispatch(SetLogin({username: username.trim(), accessToken: res.data.accessToken}));
+                    dispatch(SetLogin({username: form.username.trim(), accessToken: res.data.accessToken}));
                     return history.push('/home');
                 } else {
                     alert(res.data);
@@ -114,7 +120,7 @@ export default function Registration() {
                 setSubmit(false);
 
             } catch (e) {
-               if (e === undefined) {
+                if (e === undefined) {
                     alert("An error occurred, please try again");
                     setSubmit(false);
                 } else if (e.status === 400) {
@@ -140,19 +146,19 @@ export default function Registration() {
                 Registration
             </h1>
             <div className="inputWrapper">
-                <input type="text" className="fieldInput" value={username} placeholder={"Username"}
-                       onChange={handleUsernameChange}/>
+                <input type="text" name="username" className="fieldInput" value={form.username} placeholder={"Username"}
+                       onChange={handleFormChange}/>
                 {usernameError ? <span className="errorSpan">Username is not valid</span> : null}
             </div>
             <div className="inputWrapper">
-                <input type="email" className="fieldInput" value={email} placeholder={"Email"}
-                       onChange={handleEmailChange}/>
+                <input type="email" name="email" className="fieldInput" value={form.email} placeholder={"Email"}
+                       onChange={handleFormChange}/>
                 {emailError ? <span className="errorSpan">Email is not valid</span> : null}
             </div>
             <div className="inputWrapper">
                 <div>
-                    <input type={passwordShown ? "text" : "password"} className="fieldInput" value={password}
-                           placeholder={"Password"} onChange={handlePasswordChange} maxLength={6}/>
+                    <input type={passwordShown ? "text" : "password"} name="password" className="fieldInput" value={form.password}
+                           placeholder={"Password"} onChange={handleFormChange} maxLength={6}/>
                     {passwordShown ?
                         <AiOutlineEyeInvisible className="togglePassword" onClick={togglePassword}/>
                         :
@@ -161,10 +167,10 @@ export default function Registration() {
                 </div>
                 {passwordError ? <span className="errorSpan">Password is not valid</span> : null}
             </div>
-             <div className="inputWrapper">
-                <input type="text" className="fieldInput" value={schoolName}
+            <div className="inputWrapper">
+                <input type="text" className="fieldInput" name="schoolName" value={form.schoolName}
                        placeholder={"The name of the school in your childhood"} maxLength={20}
-                       onChange={handleSchoolNameChange}/>
+                       onChange={handleFormChange}/>
                 {schoolNameError ? <span className="errorSpan">School name is not valid</span> : null}
             </div>
 
