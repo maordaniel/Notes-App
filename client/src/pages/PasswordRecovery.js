@@ -68,7 +68,7 @@ export default function PasswordRecovery() {
     const passwordRecoveryAPI = async () => {
         if (validateLogin()) {
             setSubmit(true);
-            const body = {email: form.email, schoolName: form.schoolName.trim()};
+            const body = {email: form.email.toLowerCase(), schoolName: form.schoolName.trim()};
 
             try {
                 const res = await PostData('recovery', body);
