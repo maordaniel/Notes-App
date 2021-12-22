@@ -104,7 +104,7 @@ export default function Registration() {
             setSubmit(true);
             const body = {
                 username: form.username.trim(),
-                email: form.email.trim(),
+                email: form.email.toLowerCase().trim(),
                 password: form.password.trim(),
                 schoolName: form.schoolName.trim()
             };
