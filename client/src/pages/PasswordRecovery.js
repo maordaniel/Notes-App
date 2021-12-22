@@ -4,9 +4,9 @@ import {PostData} from "../services/api";
 import {Link} from "react-router-dom";
 
 export default function PasswordRecovery() {
-    const [email, setEmail] = useState("");
+    const [form, setForm] = useState({email: "", schoolName: ""});
+
     const [emailError, setEmailError] = useState(false);
-    const [schoolName, setSchoolName] = useState("");
     const [schoolNameError, setSchoolNameError] = useState(false);
     const [submit, setSubmit] = useState(false);
     const [password, setPassword] = useState("");
@@ -17,20 +17,31 @@ export default function PasswordRecovery() {
         return !str.trim().length;
     }
 
-    //handle email change
-    const handleEmailChange = e => {
-        setEmail(e.target.value);
-        setEmailError(false);
-    }
+    //handle change
+    const handleFormChange = e => {
+        const name = e.target.name;
+        const value = e.target.value;
 
-    //handle school name change
-    const handleSchoolNameChange = e => {
-        setSchoolName(e.target.value);
-        setSchoolNameError(false);
-    }
+        switch (name){
+            case "email":
+                form.email = value;
+                setForm({...form});
+                setEmailError(false);
+                break;
+            case "schoolName":
+                form.schoolName = value;
+                setForm({...form});
+                setSchoolNameError(false);
+                break;
+            default:
+                break;
+        }
+    };
+
+
     //email validation
     const validateEmail = () => {
-        const emailValid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
+        const emailValid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(form.email);
         return emailValid;
     }
 
@@ -45,7 +56,7 @@ export default function PasswordRecovery() {
         }
 
         //check password
-        if (isEmpty(schoolName)) {
+        if (isEmpty(form.schoolName)) {
             valid = false;
             setSchoolNameError(true);
         }
@@ -57,7 +68,7 @@ export default function PasswordRecovery() {
     const passwordRecoveryAPI = async () => {
         if (validateLogin()) {
             setSubmit(true);
-            const body = {email: email, schoolName: schoolName.trim()};
+            const body = {email: form.email, schoolName: form.schoolName.trim()};
 
             try {
                 const res = await PostData('recovery', body);
@@ -105,14 +116,14 @@ export default function PasswordRecovery() {
                         Password recovery
                     </h1>
                     <div className="inputWrapper">
-                        <input type="email" className="fieldInput" value={email} placeholder={"Email"}
-                               onChange={handleEmailChange}/>
+                        <input type="email" name="email" className="fieldInput" value={form.email} placeholder={"Email"}
+                               onChange={handleFormChange}/>
                         {emailError ? <span className="errorSpan">Email is not valid</span> : null}
                     </div>
                     <div className="inputWrapper">
-                        <input type="text" className="fieldInput" value={schoolName}
+                        <input type="text" name="schoolName" className="fieldInput" value={form.schoolName}
                                placeholder={"The name of the school in your childhood"} maxLength={20}
-                               onChange={handleSchoolNameChange}/>
+                               onChange={handleFormChange}/>
                         {schoolNameError ? <span className="errorSpan">school name is not valid</span> : null}
                     </div>
                     <button disabled={submit} className="styledButton" onClick={passwordRecoveryAPI}>Submit</button>
