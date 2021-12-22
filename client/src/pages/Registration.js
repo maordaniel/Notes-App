@@ -21,6 +21,7 @@ export default function Registration() {
     const [submit, setSubmit] = useState(false);
     const [schoolNameError, setSchoolNameError] = useState(false);
 
+    
     //validate string
     const isEmpty = (str) => {
         return !str.trim().length;
